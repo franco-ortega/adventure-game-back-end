@@ -1,0 +1,35 @@
+DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS characters CASCADE;
+DROP TABLE IF EXISTS tools CASCADE;
+DROP TABLE IF EXISTS gems CASCADE;
+
+CREATE TABLE users (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL
+);
+
+CREATE TABLE characters (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    character_name TEXT NOT NULL,
+    species TEXT NOT NULL,
+    hit_points INTEGER NOT NULL,
+    gender TEXT,
+    user_id INTEGER REFERENCES users(id)
+);
+
+CREATE TABLE tools (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    tool_name TEXT NOT NULL,
+    effect TEXT NOT NULL,
+    effect_amount INTEGER NOT NULL,
+    character_id INTEGER REFERENCES characters(id)
+);
+
+CREATE TABLE gems (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    blue_gem INTEGER NOT NULL,
+    red_gem INTEGER NOT NULL,
+    yellow_gem INTEGER NOT NULL,
+    character_id INTEGER REFERENCES characters(id)
+);
