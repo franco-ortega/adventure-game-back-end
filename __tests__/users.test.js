@@ -16,13 +16,13 @@ describe('user routes', () => {
     const res = await request(app)
       .post('/api/v1/users')
       .send({
-        name: 'Santiago',
+        username: 'Santiago',
         email: 'santiago@test.com'
       });
 
     expect(res.body).toEqual({
       id: expect.any(String),
-      name: 'Santiago',
+      username: 'Santiago',
       email: 'santiago@test.com'
     });
   });
