@@ -17,7 +17,8 @@ describe('user routes', () => {
       .post('/api/v1/users')
       .send({
         username: 'Santiago',
-        email: 'santiago@test.com'
+        email: 'santiago@test.com',
+        password: 'password'
       });
 
     expect(res.body).toEqual({
