@@ -66,7 +66,8 @@ describe('user routes', () => {
         password: 'password'
       });
 
-    const res = await agent.get('/api/v1/auth/verify');
+    const res = await agent
+      .get('/api/v1/auth/verify');
 
     expect(res.body).toEqual({
       id: user.id,
