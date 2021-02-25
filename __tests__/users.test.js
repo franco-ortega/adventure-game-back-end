@@ -31,6 +31,7 @@ describe('user routes', () => {
 
   it('logs in a user via POST', async() => {
     const user = await UserService.create({
+      username: 'Santiago',
       email: 'Santiago@test.com',
       password: 'password'
     });
@@ -44,6 +45,7 @@ describe('user routes', () => {
 
     expect(res.body).toEqual({
       id: user.id,
+      username: 'Santiago',
       email: 'Santiago@test.com'
     });
   });
