@@ -39,7 +39,7 @@ describe('user routes', () => {
     const res = await request(app)
       .post('/api/v1/auth/login')
       .send({
-        email: 'Santiago@test.com',
+        username: 'Santiago',
         password: 'password'
       });
 
@@ -62,7 +62,7 @@ describe('user routes', () => {
     await agent
       .post('/api/v1/auth/login')
       .send({
-        email: 'Santiago@test.com',
+        username: 'Santiago',
         password: 'password'
       });
 
