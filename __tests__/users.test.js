@@ -49,4 +49,29 @@ describe('user routes', () => {
       email: 'Santiago@test.com'
     });
   });
+
+  it('verifies a user is logged in via GET', async() => {
+    const agent = request.agent(app);
+
+    const user = await UserService.create({
+      username: 'Santiago',
+      email: 'Santiago@test.com',
+      password: 'password'
+    });
+
+    await agent
+      .post('/api/v1/auth/login')
+      .send({
+        email: 'Santiago@test.com',
+        password: 'password'
+      });
+
+    const res = await agent.get('/api/v1/auth/verify');
+
+    expect(res.body).toEqual({
+      id: user.id,
+      username: 'Santiago',
+      email: 'Santiago@test.com'
+    });
+  });
 });
