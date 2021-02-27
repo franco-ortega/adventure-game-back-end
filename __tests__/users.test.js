@@ -2,9 +2,11 @@ const fs = require('fs');
 const pool = require('../lib/utils/pool');
 const request = require('supertest');
 const app = require('../lib/app');
-const UserService = require('../lib/services/UserService');
+// const UserService = require('../lib/services/UserService');
+const User = require('../lib/models/User');
+const Character = require('../lib/models/Character');
 
-describe('user routes', () => {
+describe('auth routes', () => {
   beforeEach(() => {
     return pool.query(fs.readFileSync('./sql/setup.sql', 'utf-8'));
   });
@@ -13,13 +15,13 @@ describe('user routes', () => {
     return pool.end();
   });
 
-  it('signs up a new user via POST', async() => {
+  it('creates a new user via POST', async() => {
     const res = await request(app)
-      .post('/api/v1/auth/signup')
+      .post('/api/v1/users')
       .send({
         username: 'Santiago',
         email: 'santiago@test.com',
-        password: 'password'
+        passwordHash: 'password'
       });
 
     expect(res.body).toEqual({
@@ -29,50 +31,44 @@ describe('user routes', () => {
     });
   });
 
-  it('logs in a user via POST', async() => {
-    const user = await UserService.create({
+  it('get one user via GET', async() => {
+    const user = await User.insert({
       username: 'Santiago',
-      email: 'Santiago@test.com',
-      password: 'password'
+      email: 'santiago@test.com',
+      passwordHash: 'password'
     });
+
+    const characters = await Promise.all([
+      {
+        characterName: 'Tarven',
+        species: 'Elf',
+        hitPoints: 30,
+        gender: 'male',
+        userId: user.id
+      },
+      {
+        characterName: 'Sheila',
+        species: 'Human',
+        hitPoints: 30,
+        gender: 'female',
+        userId: user.id
+      },
+      {
+        characterName: 'Helga',
+        species: 'Dwarf',
+        hitPoints: 30,
+        gender: 'female',
+        userId: user.id
+      }
+
+    ].map(character => Character.insert(character)));
 
     const res = await request(app)
-      .post('/api/v1/auth/login')
-      .send({
-        username: 'Santiago',
-        password: 'password'
-      });
+      .get(`/api/v1/users/${user.id}`);
 
     expect(res.body).toEqual({
-      id: user.id,
-      username: 'Santiago',
-      email: 'Santiago@test.com'
-    });
-  });
-
-  it('verifies a user is logged in via GET', async() => {
-    const agent = request.agent(app);
-
-    const user = await UserService.create({
-      username: 'Santiago',
-      email: 'Santiago@test.com',
-      password: 'password'
-    });
-
-    await agent
-      .post('/api/v1/auth/login')
-      .send({
-        username: 'Santiago',
-        password: 'password'
-      });
-
-    const res = await agent
-      .get('/api/v1/auth/verify');
-
-    expect(res.body).toEqual({
-      id: user.id,
-      username: 'Santiago',
-      email: 'Santiago@test.com'
+      ...user,
+      characters: expect.arrayContaining(characters)
     });
   });
 });
