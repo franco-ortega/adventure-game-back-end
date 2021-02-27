@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS gems CASCADE;
 
 CREATE TABLE users (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    username TEXT NOT NULL,
+    username TEXT NOT NULL UNIQUE,
     email TEXT NOT NULL,
     password_hash TEXT NOT NULL
 );
