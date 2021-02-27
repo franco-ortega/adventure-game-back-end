@@ -71,7 +71,7 @@ describe('character routes', () => {
         gender: 'female',
         userId: Character.user_id
       }
-    ]).map(character => Character.insert(character));
+    ].map(character => Character.insert(character)));
 
     const res = await request(app)
       .get('/api/v1/characters');
